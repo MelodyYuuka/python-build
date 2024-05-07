@@ -1,0 +1,45 @@
+name: Daily Python Build
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  prepare:
+    runs-on: ubuntu-22.04
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.12
+
+    - name: Generate version list
+      run: python generate_versions.py > versions.json
+
+    - name: Set matrix for build
+      id: set-matrix
+      run: echo "::set-output name=matrix::$(jq -r '.[]' versions.json)"
+
+  build:
+    needs: prepare
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        version: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+        architecture: ["amd64", "alderlake", "znver3"]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Build Python
+      uses: ./.github/actions/build
+      with:
+        version: ${{ matrix.version }}
+        architecture: ${{ matrix.architecture }}
