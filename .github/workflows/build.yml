@@ -60,15 +60,15 @@ jobs:
           make -j4 CFLAGS="${{ env.PYTHON_CFLAGS }}"
         env:
           PYTHON_CONFIGURE_OPTS: --enable-optimizations --with-lto
-          PYTHON_CFLAGS: -march={{ inputs.architecture }} -mtune={{ inputs.architecture }} -O3
+          PYTHON_CFLAGS: -march=${{ inputs.architecture }} -mtune=${{ inputs.architecture }} -O3
 
       - name: Install and package Python
         run: |
           cd Python-$sub_version
-          sudo checkinstall -D --pkgname=python-$sub_version-{{ inputs.architecture }} --default make altinstall
+          sudo checkinstall -D --pkgname=python-$sub_version-${{ inputs.architecture }} --default make altinstall
 
       - name: Upload Python package
         uses: actions/upload-artifact@v4
         with:
-          name: python$sub_version-{{ inputs.architecture }}
-          path: Python-$sub_version/python-$sub_version-{{ inputs.architecture }}.deb
+          name: python$sub_version-${{ inputs.architecture }}
+          path: Python-$sub_version/python-$sub_version-${{ inputs.architecture }}.deb
