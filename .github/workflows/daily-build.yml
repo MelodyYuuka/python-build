@@ -26,14 +26,14 @@ jobs:
 
       - name: Generate version list
         id: set-matrix
-        run: echo "matrix=$(python generate_versions.py)" >> "$GITHUB_ENV"
+        run: echo "matrix=$(python generate_versions.py)" >> "$GITHUB_OUTPUT"
 
   build:
     needs: prepare
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        version: ${{ fromJSON(needs.prepare.env.matrix) }}
+        version: ${{ fromJSON(needs.prepare.outputs.matrix) }}
         architecture: ["x86-64", "alderlake", "znver3"]
 
     steps:
