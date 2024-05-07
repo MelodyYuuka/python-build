@@ -1,4 +1,4 @@
-name: Build Python
+name: Build Python Action
 
 on:
   workflow_dispatch:
@@ -6,6 +6,19 @@ on:
       version:
         required: true
         type: string
+      architecture:
+        required: false
+        type: string
+        default: "amd64"
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      architecture:
+        required: false
+        type: string
+        default: "amd64"
 
 jobs:
   build:
@@ -13,12 +26,12 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev wget checkinstall
+        sudo apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libbz2-dev libsqlite3-dev libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev wget checkinstall
 
     - name: Download and compile Python
       run: |
@@ -29,15 +42,15 @@ jobs:
         make -j4 CFLAGS="${{ env.PYTHON_CFLAGS }}"
       env:
         PYTHON_CONFIGURE_OPTS: --enable-optimizations --with-lto
-        PYTHON_CFLAGS: -march=native -mtune=native -O3
+        PYTHON_CFLAGS: -march={{ inputs.architecture }} -mtune={{ inputs.architecture }} -O3
 
     - name: Install and package Python
       run: |
         cd Python-${{ inputs.version }}
-        sudo checkinstall --default
+        sudo checkinstall -D --pkgname=python-${{ inputs.version }}-{{ inputs.architecture }} --default make altinstall
 
     - name: Upload Python package
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
-        name: python-package
-        path: Python-${{ inputs.version }}/python_${{ inputs.version }}-1_amd64.deb
+        name: python${{ inputs.version }}-{{ inputs.architecture }}
+        path: Python-${{ inputs.version }}/python-${{ inputs.version }}-{{ inputs.architecture }}.deb
