@@ -1,0 +1,43 @@
+name: Build Python
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev wget checkinstall
+
+    - name: Download and compile Python
+      run: |
+        wget https://www.python.org/ftp/python/${{ inputs.version }}/Python-${{ inputs.version }}.tgz
+        tar xzf Python-${{ inputs.version }}.tgz
+        cd Python-${{ inputs.version }}
+        ./configure ${{ env.PYTHON_CONFIGURE_OPTS }}
+        make -j4 CFLAGS="${{ env.PYTHON_CFLAGS }}"
+      env:
+        PYTHON_CONFIGURE_OPTS: --enable-optimizations --with-lto
+        PYTHON_CFLAGS: -march=native -mtune=native -O3
+
+    - name: Install and package Python
+      run: |
+        cd Python-${{ inputs.version }}
+        sudo checkinstall --default
+
+    - name: Upload Python package
+      uses: actions/upload-artifact@v2
+      with:
+        name: python-package
+        path: Python-${{ inputs.version }}/python_${{ inputs.version }}-1_amd64.deb
