@@ -30,16 +30,12 @@ jobs:
 
   build:
     needs: prepare
-    runs-on: ubuntu-22.04
     strategy:
       matrix:
         version: ${{ fromJSON(needs.prepare.outputs.matrix) }}
         architecture: ["x86-64", "alderlake", "znver3"]
 
-    steps:
-      - name: Build Python
-        uses: ./.github/workflows/build.yml
-
-        with:
-          version: ${{ matrix.version }}
-          architecture: ${{ matrix.architecture }}
+    uses: ./.github/workflows/build.yml
+    with:
+      version: ${{ matrix.version }}
+      architecture: ${{ matrix.architecture }}
