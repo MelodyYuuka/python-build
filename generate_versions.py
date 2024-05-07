@@ -31,9 +31,6 @@ output = []
 for key, value in max_version.items():
     if f"{key[0]}.{key[1]}" not in BUILD_VERSION:
         continue
-    if value == 0:
-        output.append(f"{key[0]}.{key[1]}")
-    else:
-        output.append(f"{key[0]}.{key[1]}.{value}")
+    output.append(f"{key[0]}.{key[1]}.{value}")
 
 print(json.dumps(output, ensure_ascii=False))
