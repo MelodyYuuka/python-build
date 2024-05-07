@@ -37,11 +37,8 @@ jobs:
         architecture: ["x86-64", "alderlake", "znver3"]
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
       - name: Build Python
-        uses: MelodyYuuka/python-build/.github/workflows/build.yml@main
+        uses: ./.github/workflows/build.yml
 
         with:
           version: ${{ matrix.version }}
