@@ -70,5 +70,5 @@ jobs:
       - name: Upload Python package
         uses: actions/upload-artifact@v4
         with:
-          name: python$sub_version-${{ inputs.architecture }}
-          path: Python-$sub_version/python-$sub_version-${{ inputs.architecture }}.deb
+          name: python${{ env.sub_version }}-${{ inputs.architecture }}
+          path: Python-${{ env.sub_version }}/python-${{ env.sub_version }}-${{ inputs.architecture }}.deb
