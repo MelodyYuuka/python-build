@@ -29,6 +29,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+
+  build:
+    runs-on: ubuntu-22.04
+    env:
+      sub_version: ${{ needs.sub_version.outputs.sub_version }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -41,16 +51,7 @@ jobs:
 
       - name: get sub_version
         id: sub_version
-        run: echo "::set-output name=sub_version::$(python3 get_latest.py ${{ inputs.version }})"
-
-  build:
-    runs-on: ubuntu-22.04
-    env:
-      sub_version: ${{ needs.sub_version.outputs.sub_version }}
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+        run: echo "sub_version=$(python3 get_latest.py ${{ inputs.version }})" >> "$GITHUB_ENV"
 
       - name: Install dependencies
         run: |
@@ -59,9 +60,9 @@ jobs:
 
       - name: Download and compile Python
         run: |
-          wget https://www.python.org/ftp/python/${{ inputs.version }}/Python-${{ env.sub_version }}.tgz
-          tar xzf Python-${{ env.sub_version }}.tgz
-          cd Python-${{ env.sub_version }}
+          wget https://www.python.org/ftp/python/${{ inputs.version }}/Python-$sub_version.tgz
+          tar xzf Python-$sub_version.tgz
+          cd Python-$sub_version
           ./configure ${{ env.PYTHON_CONFIGURE_OPTS }}
           make -j4 CFLAGS="${{ env.PYTHON_CFLAGS }}"
         env:
@@ -70,11 +71,11 @@ jobs:
 
       - name: Install and package Python
         run: |
-          cd Python-${{ env.sub_version }}
-          sudo checkinstall -D --pkgname=python-${{ env.sub_version }}-{{ inputs.architecture }} --default make altinstall
+          cd Python-$sub_version
+          sudo checkinstall -D --pkgname=python-$sub_version-{{ inputs.architecture }} --default make altinstall
 
       - name: Upload Python package
         uses: actions/upload-artifact@v4
         with:
-          name: python${{ env.sub_version }}-{{ inputs.architecture }}
-          path: Python-${{ env.sub_version }}/python-${{ env.sub_version }}-{{ inputs.architecture }}.deb
+          name: python$sub_version-{{ inputs.architecture }}
+          path: Python-$sub_version/python-$sub_version-{{ inputs.architecture }}.deb
