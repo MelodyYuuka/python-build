@@ -10,7 +10,7 @@ on:
       architecture:
         required: false
         type: string
-        default: "amd64"
+        default: "x86-64"
         description: "Architecture to build for"
   workflow_call:
     inputs:
@@ -20,7 +20,7 @@ on:
       architecture:
         required: false
         type: string
-        default: "amd64"
+        default: "x86-64"
 
 jobs:
   build:
@@ -46,7 +46,7 @@ jobs:
         id: sub_version
         run: echo "sub_version=$(python3 get_latest.py ${{ inputs.version }})" >> "$GITHUB_ENV"
 
-      - name: Install dependencies
+      - name: Install compile dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libbz2-dev libsqlite3-dev libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev wget checkinstall
@@ -60,7 +60,7 @@ jobs:
           make -j4 CFLAGS="${{ env.PYTHON_CFLAGS }}"
         env:
           PYTHON_CONFIGURE_OPTS: --enable-optimizations --with-lto
-          PYTHON_CFLAGS: -march=${{ inputs.architecture }} -mtune=${{ inputs.architecture }} -O3
+          PYTHON_CFLAGS: -march=${{ inputs.architecture }} -O3
 
       - name: Install and package Python
         run: |

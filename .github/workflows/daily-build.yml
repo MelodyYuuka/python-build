@@ -32,7 +32,7 @@ jobs:
     strategy:
       matrix:
         version: ${{ fromJSON(needs.prepare.outputs.matrix) }}
-        architecture: ["amd64", "alderlake", "znver3"]
+        architecture: ["x86-64", "alderlake", "znver3"]
 
     steps:
     - name: Checkout code
