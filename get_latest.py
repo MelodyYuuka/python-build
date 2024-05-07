@@ -1,11 +1,14 @@
+import re
+import sys
+
 import requests
 from bs4 import BeautifulSoup
-import sys
 
 version = sys.argv[1]
 
 response = requests.get(f"https://www.python.org/ftp/python/{version}/")
 soup = BeautifulSoup(response.text, "html.parser")
+g = re.compile(r"Python-(.+?)\.tgz")
 
 
 def sort_key(version: str):
@@ -21,9 +24,9 @@ def sort_key(version: str):
 
 versions = sorted(
     [
-        node.get("href").rstrip("/")
+        match.group(1)
         for node in soup.find_all("a")
-        if node.get("href").endswith(".tgz")
+        if (match := g.search(node.get("href")))
     ],
     key=sort_key,
 )
@@ -33,4 +36,4 @@ if versions:
 else:
     raise RuntimeError("No Version")
 
-print(max_version.rstrip(".tgz"))
+print(max_version)
