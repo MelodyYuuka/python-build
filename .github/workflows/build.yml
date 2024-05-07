@@ -23,13 +23,6 @@ on:
         default: "amd64"
 
 jobs:
-  sub_version:
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-
   build:
     runs-on: ubuntu-22.04
     env:
