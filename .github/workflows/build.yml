@@ -6,10 +6,12 @@ on:
       version:
         required: true
         type: string
+        description: "Python version to build"
       architecture:
         required: false
         type: string
         default: "amd64"
+        description: "Architecture to build for"
   workflow_call:
     inputs:
       version:
@@ -21,36 +23,48 @@ on:
         default: "amd64"
 
 jobs:
+  sub_version:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: get sub_version
+        id: sub_version
+        run: echo "::set-output name=sub_version::$(python3 get_latest.py)"
+
   build:
     runs-on: ubuntu-22.04
+    env:
+      sub_version: ${{ steps.sub_version.outputs.sub_version }}
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libbz2-dev libsqlite3-dev libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev wget checkinstall
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libbz2-dev libsqlite3-dev libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev wget checkinstall
 
-    - name: Download and compile Python
-      run: |
-        wget https://www.python.org/ftp/python/${{ inputs.version }}/Python-${{ inputs.version }}.tgz
-        tar xzf Python-${{ inputs.version }}.tgz
-        cd Python-${{ inputs.version }}
-        ./configure ${{ env.PYTHON_CONFIGURE_OPTS }}
-        make -j4 CFLAGS="${{ env.PYTHON_CFLAGS }}"
-      env:
-        PYTHON_CONFIGURE_OPTS: --enable-optimizations --with-lto
-        PYTHON_CFLAGS: -march={{ inputs.architecture }} -mtune={{ inputs.architecture }} -O3
+      - name: Download and compile Python
+        run: |
+          wget https://www.python.org/ftp/python/${{ inputs.version }}/Python-${{ env.sub_version }}.tgz
+          tar xzf Python-${{ env.sub_version }}.tgz
+          cd Python-${{ env.sub_version }}
+          ./configure ${{ env.PYTHON_CONFIGURE_OPTS }}
+          make -j4 CFLAGS="${{ env.PYTHON_CFLAGS }}"
+        env:
+          PYTHON_CONFIGURE_OPTS: --enable-optimizations --with-lto
+          PYTHON_CFLAGS: -march={{ inputs.architecture }} -mtune={{ inputs.architecture }} -O3
 
-    - name: Install and package Python
-      run: |
-        cd Python-${{ inputs.version }}
-        sudo checkinstall -D --pkgname=python-${{ inputs.version }}-{{ inputs.architecture }} --default make altinstall
+      - name: Install and package Python
+        run: |
+          cd Python-${{ env.sub_version }}
+          sudo checkinstall -D --pkgname=python-${{ env.sub_version }}-{{ inputs.architecture }} --default make altinstall
 
-    - name: Upload Python package
-      uses: actions/upload-artifact@v4
-      with:
-        name: python${{ inputs.version }}-{{ inputs.architecture }}
-        path: Python-${{ inputs.version }}/python-${{ inputs.version }}-{{ inputs.architecture }}.deb
+      - name: Upload Python package
+        uses: actions/upload-artifact@v4
+        with:
+          name: python${{ env.sub_version }}-{{ inputs.architecture }}
+          path: Python-${{ env.sub_version }}/python-${{ env.sub_version }}-{{ inputs.architecture }}.deb
