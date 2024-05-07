@@ -65,10 +65,10 @@ jobs:
       - name: Install and package Python
         run: |
           cd Python-$sub_version
-          sudo checkinstall -D --pkgname=python-${{ inputs.architecture }} --pkgversion=$sub_version --pkgrelease=1 --default make altinstall
+          sudo checkinstall -D --pkgname=python --pkgversion=$sub_version --pkgrelease=1 --arch=amd64 --default make altinstall
 
       - name: Upload Python package
         uses: actions/upload-artifact@v4
         with:
           name: python${{ env.sub_version }}-${{ inputs.architecture }}
-          path: Python-${{ env.sub_version }}/python-${{ inputs.architecture }}_${{ env.sub_version }}-1.deb
+          path: Python-${{ env.sub_version }}/python_${{ env.sub_version }}-1_amd64.deb
