@@ -25,11 +25,8 @@ jobs:
           pip install -r requirements.txt
 
       - name: Generate version list
-        run: python generate_versions.py > versions.json
-
-      - name: Set matrix for build
         id: set-matrix
-        run: echo "matrix=$(jq -r '.[]' versions.json)" >> "$GITHUB_ENV"
+        run: echo "matrix=$(python generate_versions.py)" >> "$GITHUB_ENV"
 
   build:
     needs: prepare
