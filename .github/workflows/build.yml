@@ -41,7 +41,7 @@ jobs:
 
       - name: get sub_version
         id: sub_version
-        run: echo "::set-output name=sub_version::$(python3 get_latest.py)"
+        run: echo "::set-output name=sub_version::$(python3 get_latest.py ${{ inputs.version }})"
 
   build:
     runs-on: ubuntu-22.04
