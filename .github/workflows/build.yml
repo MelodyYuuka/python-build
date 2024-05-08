@@ -66,9 +66,9 @@ jobs:
         run: |
           cd Python-$sub_version
           if [[ $sub_version == *.*.* ]]; then
-            major_minor_version="${sub_version%.*}"
+            echo "major_minor_version=${sub_version%.*}" >> "$GITHUB_ENV"
           else
-            major_minor_version="$sub_version"
+            echo "major_minor_version=$sub_version" >> "$GITHUB_ENV"
           fi
           sudo checkinstall -D --pkgname=python$major_minor_version --pkgversion=$sub_version --pkgrelease=1 --arch=amd64 --default make altinstall
 
