@@ -59,7 +59,7 @@ jobs:
           ./configure ${{ env.PYTHON_CONFIGURE_OPTS }}
           make -j4 CFLAGS="${{ env.PYTHON_CFLAGS }}"
         env:
-          PYTHON_CONFIGURE_OPTS: --enable-optimizations --with-lto
+          PYTHON_CONFIGURE_OPTS: $(python get_opts.py ${{ inputs.version }})
           PYTHON_CFLAGS: -march=${{ inputs.architecture }} -O3
 
       - name: Install and package Python
