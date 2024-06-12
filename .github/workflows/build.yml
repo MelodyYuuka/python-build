@@ -51,15 +51,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libbz2-dev libsqlite3-dev libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev wget checkinstall
 
-      - name: Download and compile llvm-bolt
-        run: |
-          git clone https://github.com/llvm/llvm-project.git
-          mkdir build
-          cd build
-          cmake -G "Unix Makefiles" ../llvm-project/llvm -DLLVM_TARGETS_TO_BUILD="X86" -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_ASSERTIONS=ON -DLLVM_ENABLE_PROJECTS="bolt"
-          make bolt
-          echo "PATH=$PATH:$(pwd)/bin" >> $GITHUB_ENV
-
       - name: Download and compile Python
         run: |
           wget https://www.python.org/ftp/python/${{ inputs.version }}/Python-$sub_version.tgz
