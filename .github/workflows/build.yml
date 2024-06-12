@@ -56,6 +56,7 @@ jobs:
           sudo apt-get install -y libllvm-18-ocaml-dev libllvm18 llvm-18 llvm-18-dev llvm-18-doc llvm-18-examples llvm-18-runtime
           sudo apt-get install -y libbolt-18-dev bolt-18
           sudo ln -s /usr/bin/llvm-bolt-18 /usr/bin/llvm-bolt
+          sudo ln -s /usr/bin/merge-fdata-18 /usr/bin/merge-fdata
 
       - name: Download and compile Python
         run: |
