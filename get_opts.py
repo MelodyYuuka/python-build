@@ -1,8 +1,8 @@
 import sys
 
-version = tuple(sys.argv[1].split("."))
+version = tuple(int(i) for i in sys.argv[1].split("."))
 
 if version >= (3, 12):
-    print("--enable-optimizations --with-lto --enable-bolt")
+    print("--enable-optimizations --with-lto --enable-shared --enable-bolt", end="")
 else:
-    print("--enable-optimizations --with-lto")
+    print("--enable-optimizations --with-lto --enable-shared", end="")
