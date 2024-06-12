@@ -61,7 +61,7 @@ jobs:
           wget https://www.python.org/ftp/python/${{ inputs.version }}/Python-$sub_version.tgz
           tar xzf Python-$sub_version.tgz
           cd Python-$sub_version
-          ./configure $(python3 get_opts.py ${{ inputs.version }}))
+          ./configure $(python3 get_opts.py ${{ inputs.version }})
           make -j4 CFLAGS="${{ env.PYTHON_CFLAGS }}"
         env:
           PYTHON_CFLAGS: -march=${{ inputs.architecture }} -O3
