@@ -56,7 +56,7 @@ jobs:
           git clone https://github.com/llvm/llvm-project.git
           mkdir build
           cd build
-          cmake -G Ninja ../llvm-project/llvm -DLLVM_TARGETS_TO_BUILD="X86;AArch64" -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_ASSERTIONS=ON -DLLVM_ENABLE_PROJECTS="bolt"
+          cmake -G Unix Makefiles ../llvm-project/llvm -DLLVM_TARGETS_TO_BUILD="X86" -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_ASSERTIONS=ON -DLLVM_ENABLE_PROJECTS="bolt"
           ninja bolt
           echo "PATH=$PATH:$(pwd)/bin" >> $GITHUB_ENV
 
