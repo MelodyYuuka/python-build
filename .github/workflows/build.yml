@@ -48,8 +48,7 @@ jobs:
 
       - name: Install compile dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libbz2-dev libsqlite3-dev libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev wget checkinstall
+          python3 install_dependencies.py $sub_version
 
       - name: Download and compile Python
         run: |
