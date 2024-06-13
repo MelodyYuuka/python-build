@@ -34,4 +34,4 @@ if now >= version.parse("3.12"):
     os.system(f"sudo apt-get install -y libbolt-{LLVM_VERSION}-dev bolt-{LLVM_VERSION}")
     os.system(f"sudo ln -s /usr/bin/llvm-bolt-{LLVM_VERSION} /usr/bin/llvm-bolt")
     os.system(f"sudo ln -s /usr/bin/merge-fdata-{LLVM_VERSION} /usr/bin/merge-fdata")
-    os.system(f"sudo cp -r /usr/lib/llvm-{LLVM_VERSION}/lib /usr/lib")
+    os.system(f"sudo cp -r /usr/lib/llvm-{LLVM_VERSION}/lib/* /usr/lib")
