@@ -1,8 +1,9 @@
 import sys
+from packaging import version
 
-version = tuple(int(i) for i in sys.argv[1].split("."))
+now = version.parse(sys.argv[1])
 
-if version >= (3, 12):
+if now >= version.parse("3.12"):
     print("--enable-optimizations --with-lto --enable-shared", end="")
 else:
     print("--enable-optimizations --with-lto --enable-shared", end="")
