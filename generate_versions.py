@@ -4,7 +4,7 @@ from collections import defaultdict
 import requests
 from bs4 import BeautifulSoup
 
-BUILD_VERSION = ["3.11", "3.12", "3.13", "3.14", "3.15]
+BUILD_VERSION = ["3.11", "3.12", "3.13", "3.14", "3.15"]
 
 response = requests.get("https://www.python.org/ftp/python/")
 soup = BeautifulSoup(response.text, "html.parser")
