@@ -67,8 +67,8 @@ jobs:
           export AR=llvm-ar-22
           export RANLIB=llvm-ranlib-22
 
-          ln -s /usr/bin/llvm-ar-22 /usr/bin/llvm-ar
-          ln -s /usr/bin/llvm-ranlib-22 /usr/bin/llvm-ranlib
+          sudo ln -s /usr/bin/llvm-ar-22 /usr/bin/llvm-ar
+          sudo ln -s /usr/bin/llvm-ranlib-22 /usr/bin/llvm-ranlib
           
           CFLAGS="${{ env.PYTHON_CFLAGS }}" \
           ./configure $(python3 ../get_opts.py ${{ inputs.version }})
