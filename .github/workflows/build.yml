@@ -37,7 +37,7 @@ jobs:
         with:
           python-version: 3.12
 
-      - name: Install LLVM 20
+      - name: Install LLVM 22
         run: |
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
@@ -67,7 +67,8 @@ jobs:
           export AR=llvm-ar-22
           export RANLIB=llvm-ranlib-22
 
-          ls -l /usr/bin/llvm-ar*
+          ln -s /usr/bin/llvm-ar-22 /usr/bin/llvm-ar
+          ln -s /usr/bin/llvm-ranlib-22 /usr/bin/llvm-ranlib
           
           CFLAGS="${{ env.PYTHON_CFLAGS }}" \
           ./configure $(python3 ../get_opts.py ${{ inputs.version }})
