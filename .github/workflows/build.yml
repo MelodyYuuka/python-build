@@ -69,6 +69,7 @@ jobs:
 
           sudo ln -s /usr/bin/llvm-ar-22 /usr/bin/llvm-ar
           sudo ln -s /usr/bin/llvm-ranlib-22 /usr/bin/llvm-ranlib
+          sudo ln -s /usr/bin/llvm-profdata-22 /usr/bin/llvm-profdata
           
           CFLAGS="${{ env.PYTHON_CFLAGS }}" \
           ./configure $(python3 ../get_opts.py ${{ inputs.version }})
