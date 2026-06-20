@@ -37,11 +37,40 @@ jobs:
         with:
           python-version: 3.12
 
-      - name: Install LLVM 21
-        run: |
-          wget https://apt.llvm.org/llvm.sh
-          chmod +x llvm.sh
-          sudo ./llvm.sh 21
+      # - name: Determine LLVM version
+      #   run: |
+      #     LLVM_VERSION=$(python3 - <<'PY'
+      #       from packaging.version import Version
+            
+      #       v = Version("${{ inputs.version }}")
+            
+      #       if v >= Version("3.15"):
+      #           print(21)
+      #       elif v >= Version("3.14"):
+      #           print(19)
+      #       elif v >= Version("3.13"):
+      #           print(18)
+      #       else:
+      #           print(22)
+      #       PY
+      #       )
+      #     echo "LLVM_VERSION=$LLVM_VERSION" >> $GITHUB_ENV
+
+      # - name: Install LLVM 21
+      #   run: |
+      #     wget https://apt.llvm.org/llvm.sh
+      #     chmod +x llvm.sh
+      #     sudo ./llvm.sh $LLVM_VERSION
+
+      #     echo "LLVM_VERSION=$LLVM_VERSION" >> $GITHUB_ENV
+      #     echo "CC=clang-$LLVM_VERSION" >> $GITHUB_ENV
+      #     echo "CXX=clang++-$LLVM_VERSION" >> $GITHUB_ENV
+      #     echo "AR=llvm-ar-$LLVM_VERSION" >> $GITHUB_ENV
+      #     echo "RANLIB=llvm-ranlib-$LLVM_VERSION" >> $GITHUB_ENV
+
+      #     sudo ln -s /usr/bin/llvm-ar-$LLVM_VERSION /usr/bin/llvm-ar
+      #     sudo ln -s /usr/bin/llvm-ranlib-$LLVM_VERSION /usr/bin/llvm-ranlib
+      #     sudo ln -s /usr/bin/llvm-profdata-$LLVM_VERSION /usr/bin/llvm-profdata
 
       - name: Install dependencies
         run: |
@@ -61,15 +90,6 @@ jobs:
           wget https://www.python.org/ftp/python/${{ inputs.version }}/Python-$sub_version.tgz
           tar xzf Python-$sub_version.tgz
           cd Python-$sub_version
-          
-          export CC=clang-21
-          export CXX=clang++-21
-          export AR=llvm-ar-21
-          export RANLIB=llvm-ranlib-21
-
-          sudo ln -s /usr/bin/llvm-ar-21 /usr/bin/llvm-ar
-          sudo ln -s /usr/bin/llvm-ranlib-21 /usr/bin/llvm-ranlib
-          sudo ln -s /usr/bin/llvm-profdata-21 /usr/bin/llvm-profdata
           
           CFLAGS="${{ env.PYTHON_CFLAGS }}" \
           ./configure $(python3 ../get_opts.py ${{ inputs.version }})
